@@ -1,0 +1,120 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "osl",
+	"patterns": [
+		{ "include": "#type-definitions" },
+		{ "include": "#pragma" },
+		{ "include": "#comments" },
+		{ "include": "#keywords" },
+		{ "include": "#strings" },
+		{ "include": "#lists" },
+		{ "include": "#operators" },
+		{ "include": "#functions" },
+		{ "include": "#local-bindings" },
+		{ "include": "#identifiers" }
+	],
+	"repository": {
+		"lists": {
+			"patterns": [{
+				"name": "storage.type.osl",
+				"match": "[\\[\\]]"
+			}]
+		},
+		"type-definitions": {
+			"patterns": [{
+				"name": "constant.language",
+				"match": "\\b(type)\\s+(\\w+)",
+				"captures": {
+					"1": { "name": "storage.type.osl" },
+					"2": { "name": "storage.type.primitive.osl" }
+				}
+			}]
+		},
+		"pragma": {
+			"patterns": [{
+				"begin": "(#pragma\\s+[-_a-zA-Z0-9]*\\s*\\{)",
+				"end": "(\\})",
+				"beginCaptures": { "1": { "name": "meta.preprocessor.osl" } },
+				"endCaptures": { "1": { "name": "meta.preprocessor.osl" } }
+			}]
+		},
+		"comments": {
+			"patterns": [{
+				"name": "comment.line.osl",
+				"begin": ";", "end": ".*$"
+			}]
+		},
+		"identifiers": {
+			"patterns": [
+				{
+					"name": "entity.name.variable.osl",
+					"match": "\\b[_a-z][_a-zA-Z0-9]*\\b"
+				},
+				{
+					"name": "constant.language.osl",
+					"match": "\\b[A-Z][_a-zA-Z0-9]*\\b"
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [
+				{
+					"begin": "(match)",
+					"end": "(in)",
+					"beginCaptures": { "1": { "name": "keyword.control.if.osl" } },
+					"endCaptures": { "1": { "name": "keyword.control.if.osl" } },
+					"patterns": [{ "include": "$self" }]
+				},
+				{
+					"name": "keyword.control.else.osl",
+					"match": "otherwize"
+				}
+			]
+		},
+		"local-bindings": {
+			"patterns": [
+				{
+					"name": "storage.type.osl",
+					"match": "where"
+				},
+				{
+					"begin": "(let(?:rec)?)",
+					"end": "(in)",
+					"beginCaptures": { "1": { "name": "storage.type.osl" } },
+					"endCaptures": { "1": { "name": "storage.type.osl" } },
+					"patterns": [{ "include": "$self" }]
+				}
+			]
+		},
+		"functions": {
+			"patterns": [{
+				"name": "entity.name.function.osl",
+				"match": "\\b[_a-z][_a-zA-Z0-9]*(?=[[:space:]]*\\()"
+			}]
+		},
+		"operators": {
+			"patterns": [
+				{
+					"name": "keyword.operator",
+					"match": "->"
+				},
+				{
+					"name": "keyword.operator",
+					"match": "-|\\+|\\*|/|=|\\||:"
+				}
+			]
+		},
+		"strings": {
+			"name": "string.quoted.double.osl",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.osl",
+					"match": "\\\\."
+				}
+			]
+		}
+	},
+	"scopeName": "source.osl"
+}

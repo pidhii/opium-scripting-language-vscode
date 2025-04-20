@@ -1,0 +1,25 @@
+{
+  "name": "opium-scripting-language",
+  "displayName": "Opium Scripting Language",
+  "description": "Opium scripting language support",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.99.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "osl",
+      "aliases": ["opium", "osl"],
+      "extensions": [".ops",".opi",".os", ".osl"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "osl",
+      "scopeName": "source.osl",
+      "path": "./syntaxes/osl.tmLanguage.json"
+    }]
+  }
+}
