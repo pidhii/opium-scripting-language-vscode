@@ -11,9 +11,29 @@
 		{ "include": "#operators" },
 		{ "include": "#functions" },
 		{ "include": "#local-bindings" },
-		{ "include": "#identifiers" }
+		{ "include": "#identifiers" },
+		{ "include": "#numbers" }
 	],
 	"repository": {
+		"numbers": {
+			"patterns": [
+				{
+					"name": "constant.numeric.osl",
+					"match": "[1-9][0-9]+"
+				},
+				{
+					"match": "(0x?)([0-9]+)",
+					"captures": {
+						"1": { "name": "meta.preprocessor.numeric.osl" },
+						"2": { "name": "constant.numeric" }
+					}
+				},
+				{
+					"name": "constant.numeric.osl",
+					"match": "[0-9]"
+				}
+			]
+		},
 		"lists": {
 			"patterns": [{
 				"name": "storage.type.osl",
@@ -40,8 +60,8 @@
 		},
 		"comments": {
 			"patterns": [{
-				"name": "comment.line.osl",
-				"begin": ";", "end": ".*$"
+				"name": "comment.line.double-slash.osl",
+				"begin": "//", "end": ".*$"
 			}]
 		},
 		"identifiers": {
@@ -78,7 +98,7 @@
 					"match": "where"
 				},
 				{
-					"begin": "(let(?:rec)?)",
+					"begin": "\\b(let(?:rec)?)\\b",
 					"end": "(in)",
 					"beginCaptures": { "1": { "name": "storage.type.osl" } },
 					"endCaptures": { "1": { "name": "storage.type.osl" } },
