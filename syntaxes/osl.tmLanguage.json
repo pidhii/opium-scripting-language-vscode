@@ -3,33 +3,76 @@
 	"name": "osl",
 	"patterns": [
 		{ "include": "#type-definitions" },
+		{ "include": "#types"},
 		{ "include": "#pragma" },
 		{ "include": "#comments" },
 		{ "include": "#keywords" },
 		{ "include": "#strings" },
 		{ "include": "#lists" },
+		{ "include": "#numbers" },
+		{ "include": "#macros" },
 		{ "include": "#operators" },
 		{ "include": "#functions" },
 		{ "include": "#local-bindings" },
-		{ "include": "#identifiers" },
-		{ "include": "#numbers" }
+		{ "include": "#constants" },
+		{ "include": "#identifiers" }
 	],
 	"repository": {
+		"constants": {
+			"patterns": [
+				{
+					"name": "constant.language.osl",
+					"match": "\\b(?:true|false)\\b"
+				}
+			]
+		},
+		"types": {
+			"patterns": [
+				{
+					"name": "storage.type.primitive.osl",
+					"match": "\\b(?:num|str|bool|list|array|maybe)\\b"
+				},
+				{
+					"begin": "\\bfn\\b",
+					"end": "->",
+					"beginCaptures": {
+						"0": { "name": "storage.type.primitive.osl" }
+					},
+					"endCaptures": {
+						"0": { "name": "keyword.operator" }
+					},
+					"patterns": [{ "include": "$self" }]
+				}
+			]
+		},
 		"numbers": {
 			"patterns": [
 				{
-					"name": "constant.numeric.osl",
-					"match": "[1-9][0-9]+"
+					"name": "constant.numeric.float.osl",
+					"match": "\\.[0-9][0-9_]*([eE][+-]?[0-9][0-9_]*)?"
 				},
 				{
-					"match": "(0x?)([0-9]+)",
-					"captures": {
-						"1": { "name": "meta.preprocessor.numeric.osl" },
-						"2": { "name": "constant.numeric" }
-					}
+					"name": "constant.numeric.float.osl",
+					"match": "[0-9][0-9_]*\\.[0-9_]*([eE][+-]?[0-9][0-9_]*)?"
 				},
 				{
-					"name": "constant.numeric.osl",
+					"name": "constant.numeric.float.osl",
+					"match": "[0-9][0-9_]*[eE][+-]?[0-9][0-9_]*"
+				},
+				{
+					"name": "constant.numeric.hex.osl",
+					"match": "0[xX][0-9a-fA-F_]+"
+				},
+				{
+					"name": "constant.numeric.octal.osl",
+					"match": "0[0-7_]+"
+				},
+				{
+					"name": "constant.numeric.integer.osl",
+					"match": "[1-9][0-9_]+"
+				},
+				{
+					"name": "constant.numeric.integer.osl",
 					"match": "[0-9]"
 				}
 			]
@@ -76,18 +119,73 @@
 				}
 			]
 		},
+		"macros": {
+			"patterns": [{
+				"begin": "\\bidentifier!\\(",
+				"end": "\\)",
+				"beginCaptures": { "0": { "name": "meta.preprocessor.macro" } },
+				"endCaptures": { "0": { "name": "meta.preprocessor.macro" } }
+			}]
+		},
 		"keywords": {
 			"patterns": [
 				{
-					"begin": "(match)",
-					"end": "(in)",
+					"begin": "\\bassert\\s+(:?not)?\\s*{",
+					"end": "}",
+					"beginCaptures": { "0": { "name": "keyword.control.directive.assert.osl" } },
+					"endCaptures": { "0": { "name": "keyword.control.directive.assert.osl" } },
+					"patterns": [{ "include": "$self" }]
+				},
+				{
+					"name": "keyword.control.directive.require.osl",
+					"match": "\\brequire\\b"
+				},
+				{
+					"begin": "\\b(match)\\b",
+					"end": "\\b(in)\\b",
 					"beginCaptures": { "1": { "name": "keyword.control.if.osl" } },
 					"endCaptures": { "1": { "name": "keyword.control.if.osl" } },
 					"patterns": [{ "include": "$self" }]
 				},
 				{
+					"begin": "\\b(for)\\b",
+					"end": "\\b(in)\\b",
+					"beginCaptures": { "1": { "name": "keyword.control.for.osl" } },
+					"endCaptures": { "1": { "name": "keyword.control.for.osl" } },
+					"patterns": [{ "include": "$self" }]
+				},
+				{
+					"match": "\\bdo\\b",
+					"name": "keyword.control.for.osl"
+				},
+				{
+					"name": "keyword.control.break.osl",
+					"match": "\\bbreak\\b"
+				},
+				{
+					"name": "keyword.control.continue.osl",
+					"match": "\\bcontinue\\b"
+				},
+				{
+					"name": "keyword.control.return.osl",
+					"match": "\\breturn\\b"
+				},
+				{
 					"name": "keyword.control.else.osl",
-					"match": "otherwize"
+					"match": "\\b(?:otherwize|else)\\b"
+				},
+				{
+					"begin": "\\b(set)\\b",
+					"end": "(=)",
+					"captures": {
+						"1": { "name": "keyword.control.directive.osl" },
+						"2": { "name": "keyword.control.directive.osl" }
+					},
+					"patterns": [{ "include": "$self" }]
+				},
+				{
+					"name": "keyword.control.if.osl",
+					"match": "\\b(?:if|then)\\b"
 				}
 			]
 		},
@@ -95,14 +193,18 @@
 			"patterns": [
 				{
 					"name": "storage.type.osl",
-					"match": "where"
+					"match": "\\bwhere\\b"
 				},
 				{
 					"begin": "\\b(let(?:rec)?)\\b",
-					"end": "(in)",
+					"end": "\\b(in)\\b",
 					"beginCaptures": { "1": { "name": "storage.type.osl" } },
 					"endCaptures": { "1": { "name": "storage.type.osl" } },
 					"patterns": [{ "include": "$self" }]
+				},
+				{
+					"name": "storage.modifier.import.osl",
+					"match": "\\bextern\\b"
 				}
 			]
 		},
@@ -120,18 +222,47 @@
 				},
 				{
 					"name": "keyword.operator",
-					"match": "-|\\+|\\*|/|=|\\||:"
+					"match": "==|!=|>|>=|<|<="
+				},
+				{
+					"name": "keyword.operator",
+					"match": "\\b(:?and|or|not)\\b"
+				},
+				{
+					"name": "keyword.operator",
+					"match": "=|\\+|-|\\*|/|%|\\||:"
 				}
 			]
 		},
 		"strings": {
-			"name": "string.quoted.double.osl",
-			"begin": "\"",
-			"end": "\"",
 			"patterns": [
 				{
-					"name": "constant.character.escape.osl",
-					"match": "\\\\."
+					"name": "string.quoted.double.osl",
+					"begin": "\"",
+					"end": "\"",
+					"patterns": [
+						{
+							"name": "constant.character.escape.special.osl",
+							"match": "\\\\[ntre]"
+						},
+						{
+							"name": "constant.character.escape.quote.osl",
+							"match": "\\\\\""
+						},
+						{
+							"name": "constant.character.escape.backslash.osl",
+							"match": "\\\\\\\\"
+						},
+						{
+							"name": "constant.character.escape.generic.osl",
+							"match": "\\\\."
+						}
+					]
+				},
+				{
+					"name": "string.quoted.double.osl",
+					"begin": "r\"",
+					"end": "\""
 				}
 			]
 		}
