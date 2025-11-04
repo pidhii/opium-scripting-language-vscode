@@ -16,10 +16,12 @@
       "extensions": [".ops",".opi",".os", ".osl"],
       "configuration": "./language-configuration.json"
     }],
-    "grammars": [{
-      "language": "osl",
-      "scopeName": "source.osl",
-      "path": "./syntaxes/osl.tmLanguage.json"
-    }]
+    "grammars": [
+      {
+        "language": "osl",
+        "scopeName": "source.osl",
+        "path": "./syntaxes/osl.tmLanguage.json"
+      }
+    ]
   }
 }

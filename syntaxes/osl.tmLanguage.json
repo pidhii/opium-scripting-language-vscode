@@ -11,6 +11,7 @@
 		{ "include": "#lists" },
 		{ "include": "#numbers" },
 		{ "include": "#macros" },
+		{ "include": "#inline-code" },
 		{ "include": "#operators" },
 		{ "include": "#functions" },
 		{ "include": "#local-bindings" },
@@ -102,10 +103,16 @@
 			}]
 		},
 		"comments": {
-			"patterns": [{
-				"name": "comment.line.double-slash.osl",
-				"begin": "//", "end": ".*$"
-			}]
+			"patterns": [
+				{
+					"name": "comment.line.number-sign",
+					"match": "^#!.*$"
+				},
+				{
+					"name": "comment.line.double-slash.osl",
+					"begin": "//", "end": ".*$"
+				}
+			]
 		},
 		"identifiers": {
 			"patterns": [
@@ -185,6 +192,10 @@
 				},
 				{
 					"name": "keyword.control.if.osl",
+					"match": "\\bif\\s+let\\b"
+				},
+				{
+					"name": "keyword.control.if.osl",
 					"match": "\\b(?:if|then)\\b"
 				}
 			]
@@ -204,7 +215,11 @@
 				},
 				{
 					"name": "storage.modifier.import.osl",
-					"match": "\\bextern\\b"
+					"match": "\\bextern(:?\\s+foreign)?\\b"
+				},
+				{
+					"name": "storage.modifier.import.osl",
+					"match": "\\bas\\b"
 				}
 			]
 		},
@@ -217,19 +232,23 @@
 		"operators": {
 			"patterns": [
 				{
-					"name": "keyword.operator",
+					"name": "keyword.operator.osl",
+					"match": "\\breinterpret_cast\\b"
+				},
+				{
+					"name": "keyword.operator.osl",
 					"match": "->"
 				},
 				{
-					"name": "keyword.operator",
+					"name": "keyword.operator.osl",
 					"match": "==|!=|>|>=|<|<="
 				},
 				{
-					"name": "keyword.operator",
+					"name": "keyword.operator.osl",
 					"match": "\\b(:?and|or|not)\\b"
 				},
 				{
-					"name": "keyword.operator",
+					"name": "keyword.operator.osl",
 					"match": "=|\\+|-|\\*|/|%|\\||:"
 				}
 			]
@@ -263,6 +282,40 @@
 					"name": "string.quoted.double.osl",
 					"begin": "r\"",
 					"end": "\""
+				}
+			]
+		},
+		"inline-code": {
+			"patterns": [
+				{
+					"begin": "^```([cC])$",
+					"end": "```",
+					"beginCaptures": {
+						"0": {"name": "keyword.control.directive" },
+						"1": {"name": "string.quoted.double.osl" }
+					},
+					"endCaptures": { "0": {"name": "keyword.control.directive" } },
+					"patterns": [{ "include": "source.c" }]
+				},
+				{
+					"begin": "^```([cC](:?\\+\\+|pp|xx))$",
+					"end": "```",
+					"beginCaptures": {
+						"0": {"name": "keyword.control.directive" },
+						"1": {"name": "string.quoted.double.osl" }
+					},
+					"endCaptures": { "0": {"name": "keyword.control.directive" } },
+					"patterns": [{ "include": "source.cpp" }]
+				},
+				{
+					"begin": "^```(.*)$",
+					"end": "```",
+					"beginCaptures": {
+						"0": {"name": "keyword.control.directive" },
+						"1": {"name": "string.quoted.double.osl" }
+					},
+					"endCaptures": { "0": {"name": "keyword.control.directive" } },
+					"patterns": [{ "include": "source.c" }]
 				}
 			]
 		}
