@@ -130,12 +130,20 @@
 			"patterns": [{
 				"begin": "\\bidentifier!\\(",
 				"end": "\\)",
-				"beginCaptures": { "0": { "name": "meta.preprocessor.macro" } },
-				"endCaptures": { "0": { "name": "meta.preprocessor.macro" } }
+				"beginCaptures": { "0": { "name": "meta.preprocessor.macro.osl" } },
+				"endCaptures": { "0": { "name": "meta.preprocessor.macro.osl" } }
 			}]
 		},
 		"keywords": {
 			"patterns": [
+				{
+					"match": "\\b(macro)\\s+(\\w+)\\b",
+					"name": "meta.preprocessor.macro.osl",
+					"captures": {
+						"1": { "name": "meta.preprocessor.osl" },
+						"2": { "name": "meta.preprocessor.macro.osl" }
+					}
+				},
 				{
 					"begin": "\\bassert\\s+(:?not)?\\s*{",
 					"end": "}",
