@@ -3,6 +3,7 @@
 	"name": "osl",
 	"patterns": [
 		{ "include": "#type-definitions" },
+		{ "include": "#brackets" },
 		{ "include": "#types"},
 		{ "include": "#pragma" },
 		{ "include": "#comments" },
@@ -19,6 +20,20 @@
 		{ "include": "#identifiers" }
 	],
 	"repository": {
+		"brackets": {
+			"patterns": [
+				{
+					"begin": "{",
+					"end": "}",
+					"patterns": [{ "include": "$self" }]
+				},
+				{
+					"begin": "\\(",
+					"end": "\\)",
+					"patterns": [{ "include": "$self" }]
+				}
+			]
+		},
 		"constants": {
 			"patterns": [
 				{
@@ -41,6 +56,19 @@
 					},
 					"endCaptures": {
 						"0": { "name": "keyword.operator" }
+					},
+					"patterns": [{ "include": "$self" }]
+				},
+				{
+					"match": "\\?",
+					"name": "storage.modifier.osl"
+				},
+				{
+					"begin": "\\bgenerator\\s*{",
+					"end": "}",
+					"captures": {
+						"0": { "name": "storage.type.generator.osl" },
+						"1": { "name": "storage.type.generator.osl" }
 					},
 					"patterns": [{ "include": "$self" }]
 				}
@@ -127,15 +155,25 @@
 			]
 		},
 		"macros": {
-			"patterns": [{
-				"begin": "\\bidentifier!\\(",
-				"end": "\\)",
-				"beginCaptures": { "0": { "name": "meta.preprocessor.macro.osl" } },
-				"endCaptures": { "0": { "name": "meta.preprocessor.macro.osl" } }
-			}]
+			"patterns": [
+				{
+					"begin": "\\bidentifier!\\(",
+					"end": "\\)",
+					"beginCaptures": { "0": { "name": "meta.preprocessor.macro.osl" } },
+					"endCaptures": { "0": { "name": "meta.preprocessor.macro.osl" } }
+				},
+				{
+					"match": "\\bnull\\b",
+					"name": "meta.preprocessor.macro.osl.null"
+				}
+			]
 		},
 		"keywords": {
 			"patterns": [
+				{
+					"match": "\\byield\\b",
+					"name": "keyword.control.flow.osl"
+				},
 				{
 					"match": "\\b(macro)\\s+(\\w+)\\b",
 					"name": "meta.preprocessor.macro.osl",
@@ -163,11 +201,22 @@
 					"patterns": [{ "include": "$self" }]
 				},
 				{
+					"begin": "\\b(case)\\b",
+					"end": "\\b(in)\\b",
+					"beginCaptures": { "1": { "name": "keyword.control.if.osl" } },
+					"endCaptures": { "1": { "name": "keyword.control.if.osl" } },
+					"patterns": [{ "include": "$self" }]
+				},
+				{
 					"begin": "\\b(for)\\b",
 					"end": "\\b(in)\\b",
 					"beginCaptures": { "1": { "name": "keyword.control.for.osl" } },
 					"endCaptures": { "1": { "name": "keyword.control.for.osl" } },
 					"patterns": [{ "include": "$self" }]
+				},
+				{
+					"match": "\\b(:?while(:?\\s+let)?)\\b",
+					"name": "keyword.control.while.osl"
 				},
 				{
 					"match": "\\bdo\\b",
@@ -199,12 +248,20 @@
 					"patterns": [{ "include": "$self" }]
 				},
 				{
-					"name": "keyword.control.if.osl",
-					"match": "\\bif\\s+let\\b"
+					"match": "\\bif\\s+let\\b",
+					"name": "keyword.control.if.osl"
 				},
 				{
-					"name": "keyword.control.if.osl",
-					"match": "\\b(?:if|then)\\b"
+					"match": "\\b(?:if|then)\\b",
+					"name": "keyword.control.if.osl"
+				},
+				{
+					"match": "\\btry\\b",
+					"name": "keyword.control.try.osl"
+				},
+				{
+					"match": "\\bcatch\\b",
+					"name": "keyword.control.catch.osl"
 				}
 			]
 		},
@@ -241,7 +298,15 @@
 			"patterns": [
 				{
 					"name": "keyword.operator.osl",
+					"match": "\\bpack\\b"
+				},
+				{
+					"name": "keyword.operator.osl",
 					"match": "\\breinterpret_cast\\b"
+				},
+				{
+					"name": "keyword.operator.osl",
+					"match": "\\bcoerce\\b"
 				},
 				{
 					"name": "keyword.operator.osl",
@@ -257,7 +322,7 @@
 				},
 				{
 					"name": "keyword.operator.osl",
-					"match": "=|\\+|-|\\*|/|%|\\||:"
+					"match": "=|\\+|-|\\*|/|%|\\||:|&"
 				}
 			]
 		},
@@ -295,6 +360,25 @@
 		},
 		"inline-code": {
 			"patterns": [
+				{
+					"begin": "\\bscm\\b\\s*{",
+					"end": "}",
+					"captures": {
+						"0": {"name": "keyword.control.directive.osl"},
+						"1": {"name": "keyword.control.directive.osl"}
+					},
+					"patterns": [{ "include": "source.scheme" }]
+				},
+				{
+					"begin": "^~~~(.*)$",
+					"end": "~~~",
+					"beginCaptures": {
+						"0": {"name": "keyword.control.directive.osl" },
+						"1": {"name": "string.quoted.double.osl" }
+					},
+					"endCaptures": { "0": {"name": "keyword.control.directive" } },
+					"patterns": [{ "include": "source.scheme" }]
+				},
 				{
 					"begin": "^```([cC])$",
 					"end": "```",
